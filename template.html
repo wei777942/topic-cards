@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#2b2350">
+<title>話題抽卡</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--a:#ff6b9d;--b:#ffb36b;--bg1:#1d1442;--bg2:#3b1f6e}
+body{margin:0;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;color:#fff;min-height:100vh;padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px);background:radial-gradient(circle at 20% 0%,var(--bg2),var(--bg1) 70%);transition:background .5s;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(70px);opacity:.45;z-index:-1;animation:float 12s ease-in-out infinite alternate}
+body::before{background:var(--a);top:-100px;left:-120px}body::after{background:var(--b);bottom:-120px;right:-120px;animation-delay:-6s}
+@keyframes float{to{transform:translate(60px,80px) scale(1.2)}}
+h1{text-align:center;margin:22px 0 2px;font-size:36px;font-weight:900;background:linear-gradient(90deg,#fff,var(--b));-webkit-background-clip:text;color:transparent}
+h2{font-size:15px;letter-spacing:2px;margin:22px 0 10px;opacity:.75}
+.panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn{display:block;width:100%;border:0;border-radius:18px;padding:18px;font-size:20px;font-weight:800;margin:10px 0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.3);transition:transform .12s}
+.btn:active,.deck:active,.stepper button:active{transform:scale(.95)}
+.btn.sec{background:rgba(255,255,255,.12);box-shadow:none;font-size:17px;border:1px solid rgba(255,255,255,.18)}.row{display:flex;gap:10px}.row .btn{flex:1}
+.stepper{display:flex;align-items:center;justify-content:center;gap:24px}
+.stepper button{width:64px;height:64px;border-radius:50%;border:0;font-size:32px;font-weight:700;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;transition:transform .12s}
+.stepper span{font-size:44px;font-weight:900;min-width:60px;text-align:center}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+input,textarea{width:100%;font-size:17px;padding:13px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;outline:none}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.5)}
+.decks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.deck{padding:16px 10px;border-radius:20px;background:rgba(255,255,255,.08);font-size:15px;font-weight:700;border:2px solid rgba(255,255,255,.12);text-align:center;transition:all .2s}
+.deck b{display:block;font-size:36px;margin-bottom:6px}.deck small{display:block;opacity:.7;font-weight:400;margin-top:2px}
+.deck.on{border-color:#fff;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 8px 24px rgba(0,0,0,.35);transform:translateY(-3px)}
+.deck:last-child:nth-child(odd){grid-column:span 2}
+.hidden{display:none!important}
+#turn{text-align:center;margin:18px 0 4px}
+#turn .who{display:inline-block;padding:10px 22px;border-radius:999px;background:linear-gradient(135deg,var(--a),var(--b));font-size:24px;font-weight:900;box-shadow:0 6px 18px rgba(0,0,0,.3);animation:pop .4s}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.prog{height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;margin:10px 30px 0}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--b));transition:width .4s}
+#count{text-align:center;opacity:.8;font-size:15px;margin-top:6px}
+.scene{perspective:1200px;margin:16px auto;width:86%;max-width:360px;aspect-ratio:3/4}
+.card{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d;cursor:pointer}
+.card:not(.flip){animation:bob 3s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-8px) rotate(-1deg)}}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:28px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:30px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.back{background:linear-gradient(135deg,var(--a),var(--b));flex-direction:column;font-size:22px;font-weight:800;border:6px solid rgba(255,255,255,.85);overflow:hidden}
+.back::before{content:"";position:absolute;inset:14px;border-radius:18px;border:2px dashed rgba(255,255,255,.6)}
+.back .big{font-size:84px;margin-bottom:10px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+.front{background:#fffdf7;color:#2a2140;transform:rotateY(180deg);font-size:26px;font-weight:800;line-height:1.55;flex-direction:column;border:6px solid #fff}
+.front .tag{position:absolute;top:18px;left:0;right:0;font-size:14px;font-weight:700;color:var(--a);letter-spacing:1px}
+.front .no{position:absolute;bottom:18px;left:0;right:0;font-size:13px;color:#aaa}
+.small{text-align:center;opacity:.7;margin:0}
+.conf{position:fixed;top:40%;font-size:22px;pointer-events:none;animation:boom 1s ease-out forwards;z-index:9}
+@keyframes boom{to{transform:translate(var(--x),var(--y)) rotate(540deg);opacity:0}}
+</style></head><body>
+<div id="setup">
+<div style="text-align:center;font-size:44px;margin-top:18px">🃏</div><h1 style="margin-top:0">話題抽卡</h1><p class="small">抽一張，聊一聊</p>
+<h2>👥 人數與名字</h2>
+<div class="panel"><div class="stepper"><button id="minus">−</button><span id="n">4</span><button id="plus">＋</button></div>
+<div class="names" id="names"></div></div>
+<h2>🎴 選個主題</h2><div class="decks" id="decks"></div>
+<div id="customBox" class="hidden"><h2>自訂題目（一行一題）</h2><textarea id="custom" rows="7" placeholder="貼上你的題目，一行一題"></textarea></div>
+<button class="btn" id="start" style="margin-top:20px">開始抽卡</button>
+</div>
+<div id="game" class="hidden">
+<div id="turn"></div><div class="prog"><i id="bar"></i></div><div id="count"></div>
+<div class="scene"><div class="card" id="card"><div class="face back"><div class="big" id="bigE">🃏</div><div>點一下翻牌</div></div><div class="face front"><div class="tag" id="tag"></div><div id="q"></div><div class="no" id="no"></div></div></div></div>
+<button class="btn" id="next">下一位 👉</button>
+<div class="row"><button class="btn sec" id="skip">跳過這題</button><button class="btn sec" id="shuffle">重新洗牌</button></div>
+<button class="btn sec" id="back">回到設定</button>
+</div>
+<script>
+const DECKS=__DECKS__;
+const KEY='topicCards.v1';
+let S=Object.assign({n:4,names:[],deck:'kids',custom:''},JSON.parse(localStorage.getItem(KEY)||'{}'));
+let pile=[],total=0,drawn=0,player=0,flipped=false;
+const $=id=>document.getElementById(id);
+const THEME={kids:['#ff8a3d','#ffd23f','#3a1d5c','#c2410c'],teen:['#7c3aed','#ec4899','#130c33','#4c1d95'],young:['#06b6d4','#6366f1','#0b1638','#1e40af'],family:['#10b981','#f59e0b','#0d2420','#065f46'],senior:['#e11d48','#f97316','#2a0f17','#7f1d1d'],custom:['#64748b','#a855f7','#15131f','#3b2f5c']};
+function theme(){const c=THEME[S.deck]||THEME.custom,r=document.documentElement.style;r.setProperty('--a',c[0]);r.setProperty('--b',c[1]);r.setProperty('--bg1',c[2]);r.setProperty('--bg2',c[3]);const d=DECKS.find(x=>x.id===S.deck);$('bigE').textContent=d?d.emoji:'✏️';$('tag').textContent=d?d.name:'自訂主題'}
+function confetti(){const e=['✨','🎉','💬','⭐','🎈'];for(let i=0;i<14;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%5];s.style.left='50%';s.style.setProperty('--x',(Math.random()*300-150)+'px');s.style.setProperty('--y',(Math.random()*-300-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+function renderNames(){const box=$('names');box.innerHTML='';for(let i=0;i<S.n;i++){const inp=document.createElement('input');inp.placeholder='玩家 '+(i+1);inp.value=S.names[i]||'';inp.oninput=()=>{S.names[i]=inp.value;save()};box.appendChild(inp)}$('n').textContent=S.n}
+function renderDecks(){const box=$('decks');box.innerHTML='';[...DECKS.map(d=>{const m=d.name.match(/^(.*?)（(.*)）$/)||[0,d.name,''];return{id:d.id,label:'<b>'+d.emoji+'</b>'+m[1]+'<small>'+m[2]+'</small>'}}),{id:'custom',label:'<b>✏️</b>自訂主題<small>貼上自己的題目</small>'}].forEach(d=>{const el=document.createElement('div');el.className='deck'+(S.deck===d.id?' on':'');el.innerHTML=d.label;el.onclick=()=>{S.deck=d.id;save();renderDecks()};box.appendChild(el)});theme();$('customBox').classList.toggle('hidden',S.deck!=='custom')}
+$('minus').onclick=()=>{if(S.n>2){S.n--;save();renderNames()}};
+$('plus').onclick=()=>{if(S.n<12){S.n++;save();renderNames()}};
+$('custom').value=S.custom;$('custom').oninput=e=>{S.custom=e.target.value;save()};
+function cards(){if(S.deck==='custom')return[...new Set(S.custom.split('\n').map(s=>s.trim()).filter(Boolean))];return DECKS.find(d=>d.id===S.deck).cards}
+function shuffle(){pile=cards().slice();for(let i=pile.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pile[i],pile[j]]=[pile[j],pile[i]]}total=pile.length;drawn=0;hide()}
+function name(i){return(S.names[i]||'').trim()||('玩家 '+(i+1))}
+function hide(){flipped=false;$('card').classList.remove('flip');ui()}
+function ui(){$('turn').innerHTML='<span class="who">輪到 '+name(player).replace(/[<>&]/g,'')+'</span>';$('bar').style.width=(total?drawn/total*100:0)+'%';$('count').textContent='剩 '+(total-drawn)+' / '+total+' 張'}
+function draw(){if(flipped)return;if(drawn>=total){if(confirm('牌抽完了！要重新洗牌嗎？'))shuffle();return}$('q').textContent=pile[drawn];drawn++;$('no').textContent='#'+drawn;setTimeout(confetti,350);flipped=true;$('card').classList.add('flip');ui()}
+$('card').onclick=draw;
+$('next').onclick=()=>{if(!flipped){draw();return}player=(player+1)%S.n;hide()};
+$('skip').onclick=()=>{if(!flipped){draw();return}$('card').classList.remove('flip');flipped=false;setTimeout(()=>draw(),350)};
+$('shuffle').onclick=()=>{shuffle()};
+$('start').onclick=()=>{if(cards().length===0){alert('自訂主題還沒有題目喔');return}player=0;shuffle();$('setup').classList.add('hidden');$('game').classList.remove('hidden')};
+$('back').onclick=()=>{$('game').classList.add('hidden');$('setup').classList.remove('hidden')};
+renderNames();renderDecks();
+</script></body></html>
