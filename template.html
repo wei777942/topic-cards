@@ -66,11 +66,12 @@ input::placeholder,textarea::placeholder{color:rgba(255,255,255,.5)}
 </div>
 <script>
 const DECKS=__DECKS__;
-const KEY='topicCards.v1';
-let S=Object.assign({n:4,names:[],deck:'kids',custom:''},JSON.parse(localStorage.getItem(KEY)||'{}'));
+const KEY='topicCards.v2';
+let S=Object.assign({n:4,names:[],deck:'icebreak',custom:''},JSON.parse(localStorage.getItem(KEY)||'{}'));
+if(S.deck!=='custom'&&!DECKS.some(d=>d.id===S.deck))S.deck='icebreak';
 let pile=[],total=0,drawn=0,player=0,flipped=false;
 const $=id=>document.getElementById(id);
-const THEME={kids:['#ff8a3d','#ffd23f','#3a1d5c','#c2410c'],teen:['#7c3aed','#ec4899','#130c33','#4c1d95'],young:['#06b6d4','#6366f1','#0b1638','#1e40af'],family:['#10b981','#f59e0b','#0d2420','#065f46'],senior:['#e11d48','#f97316','#2a0f17','#7f1d1d'],custom:['#64748b','#a855f7','#15131f','#3b2f5c']};
+const THEME={icebreak:['#ff8a3d','#ffd23f','#3a1d5c','#c2410c'],acquaint:['#7c3aed','#ec4899','#130c33','#4c1d95'],friend:['#06b6d4','#6366f1','#0b1638','#1e40af'],close:['#10b981','#f59e0b','#0d2420','#065f46'],soulmate:['#e11d48','#f97316','#2a0f17','#7f1d1d'],custom:['#64748b','#a855f7','#15131f','#3b2f5c']};
 function theme(){const c=THEME[S.deck]||THEME.custom,r=document.documentElement.style;r.setProperty('--a',c[0]);r.setProperty('--b',c[1]);r.setProperty('--bg1',c[2]);r.setProperty('--bg2',c[3]);const d=DECKS.find(x=>x.id===S.deck);$('bigE').textContent=d?d.emoji:'✏️';$('tag').textContent=d?d.name:'自訂主題'}
 function confetti(){const e=['✨','🎉','💬','⭐','🎈'];for(let i=0;i<14;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%5];s.style.left='50%';s.style.setProperty('--x',(Math.random()*300-150)+'px');s.style.setProperty('--y',(Math.random()*-300-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
