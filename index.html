@@ -41,13 +41,13 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 .chip{flex:none;padding:8px 14px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff22;font-size:15px;white-space:nowrap}
 .chip.on{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;font-weight:800;box-shadow:0 0 16px #ffa50088}
 .chip i{font-style:normal;margin-left:6px;opacity:.85}
-.stage{position:relative;height:300px;margin-top:18px;perspective:900px;touch-action:none}
-.frame{position:absolute;top:12px;left:50%;width:186px;height:260px;margin-left:-93px;border-radius:24px;border:2px solid var(--g);box-shadow:0 0 30px #ffb02088,inset 0 0 20px #ffb02044;pointer-events:none}
-.c{position:absolute;top:28px;left:50%;width:160px;height:228px;margin-left:-80px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;box-shadow:0 14px 30px #000a;border:3px solid #ffffffcc;will-change:transform}
+.stage{position:relative;height:270px;margin-top:14px;overflow:visible;perspective:900px;touch-action:none}
+.frame{position:absolute;top:12px;left:50%;width:180px;height:244px;margin-left:-90px;border-radius:24px;border:2px solid var(--g);box-shadow:0 0 30px #ffb02088,inset 0 0 20px #ffb02044;pointer-events:none}
+.c{position:absolute;top:29px;left:50%;width:154px;height:210px;margin-left:-77px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;box-shadow:0 14px 30px #000a;will-change:transform}
 .c .e{font-size:50px}.c .n{font-size:18px;margin-top:8px}.c .s{font-size:12px;opacity:.85;margin-top:4px}
-.c::before{content:"";position:absolute;inset:9px;border-radius:12px;border:1.5px dashed #ffffff88}
+.c.mid{box-shadow:0 0 34px #ffb020aa,0 14px 30px #000a}
 .arr{text-align:center;font-size:24px;color:var(--g);margin-top:2px;animation:nud 1.4s infinite}@keyframes nud{50%{transform:translateY(6px)}}
-.slot{position:relative;width:210px;height:96px;margin:6px auto 0;border-radius:20px;border:1.5px solid #ffffff30;background:linear-gradient(#ffffff08,#ffffff02);overflow:hidden}
+.slot{position:relative;width:200px;height:110px;margin:6px auto 0;border-radius:20px;border:1.5px solid #ffffff30;background:linear-gradient(#ffffff08,#ffffff02);overflow:hidden}
 .slot::after{content:"";position:absolute;left:20px;right:20px;bottom:-30px;height:60px;border-radius:50%;background:var(--a);filter:blur(22px);opacity:.75;transition:opacity .3s}
 .slot.hot::after{opacity:1;background:#ffe08a}
 .cnt{text-align:center;opacity:.6;font-size:14px;margin:12px 0 4px}
@@ -90,10 +90,10 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 </div>
 
 <div id="game" class="scr hidden">
-<div class="top"><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點中間的牌或往下拖進卡槽</div></div>
+<div class="top"><div style="font-size:34px">🃏</div><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點中間的牌或往下拖進卡槽</div></div>
 <div class="chips" id="chips"></div>
 <div class="stage" id="stage"><div class="frame"></div></div>
-<div class="arr">⌄</div><div class="slot" id="slot"></div>
+<div class="arr" style="letter-spacing:-6px">⌄⌄</div><div class="slot" id="slot"></div>
 <div class="cnt" id="cnt"></div>
 <div class="row"><button class="btn sec" id="shuf">🔀 洗牌</button><button class="btn sec" id="restart">🔄 重新開始</button></div>
 <button class="btn sec" id="back">回到設定</button>
@@ -152,14 +152,14 @@ const on=$('chips').querySelector('.on');if(on)on.scrollIntoView({inline:'center
 $('cnt').textContent='剩 '+remaining()+' / '+G.total+' 張';draw3d()}
 function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>🎉</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
 const [a,b]=col(),i=deckInfo();const base=Math.round(pos);const items=[];
-for(let o=-3;o<=3;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
+for(let o=-2;o<=2;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
 items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div><div class=n>話題卡</div><div class=s>${esc(i.short)}</div>`;
-const ad=Math.abs(d);e.style.transform=`translateX(${d*112}px) translateZ(${-Math.min(ad,3)*110}px) rotateY(${Math.max(-60,Math.min(60,-d*35))}deg)`;e.style.opacity=Math.max(0,1-ad*.22);e.style.zIndex=10-Math.round(ad);st.appendChild(e)})}
+const ad=Math.abs(d);if(ad<.5)e.classList.add('mid');e.style.transform=`translateX(${d*120}px) translateZ(${-Math.min(ad,2.5)*120}px) rotateY(${Math.max(-60,Math.min(60,-d*35))}deg)`;e.style.opacity=Math.max(0,1-ad*.25);e.style.filter=`brightness(${1-ad*.22}) hue-rotate(${((idx%5)-2)*14}deg)`;e.style.zIndex=10-Math.round(ad);st.appendChild(e)})}
 function settle(){cancelAnimationFrame(anim);const step=()=>{if(Math.abs(vel)>.002){pos+=vel;vel*=.93;draw3d();anim=requestAnimationFrame(step)}else{const t=Math.round(pos);const s2=()=>{pos+=(t-pos)*.25;if(Math.abs(t-pos)<.01){pos=t;draw3d();return}draw3d();anim=requestAnimationFrame(s2)};s2()}};step()}
 (function(){const st=$('stage');let sx,sy,lx,lt,moved,mode;
 st.addEventListener('pointerdown',e=>{if(!remaining())return;cancelAnimationFrame(anim);sx=lx=e.clientX;sy=e.clientY;lt=performance.now();moved=false;mode=null;vel=0;dragging=true;st.setPointerCapture(e.pointerId)});
 st.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(!mode&&(Math.abs(dx)>8||Math.abs(dy)>8)){mode=Math.abs(dy)>Math.abs(dx)&&dy>0?'down':'side';moved=true}
-if(mode==='side'){const now=performance.now();const ddx=e.clientX-lx;pos-=ddx/112;vel=-ddx/112/Math.max(1,(now-lt)/16);lx=e.clientX;lt=now;draw3d()}
+if(mode==='side'){const now=performance.now();const ddx=e.clientX-lx;pos-=ddx/120;vel=-ddx/120/Math.max(1,(now-lt)/16);lx=e.clientX;lt=now;draw3d()}
 if(mode==='down'){const c=[...st.querySelectorAll('.c')].pop();if(c){c.style.transform=`translateY(${Math.max(0,dy)}px) scale(${1-Math.min(dy,200)/800})`}$('slot').classList.toggle('hot',dy>110)}});
 const end=e=>{if(!dragging)return;dragging=false;const dy=e.clientY-sy;$('slot').classList.remove('hot');
 if(!moved){pick();return}if(mode==='down'){if(dy>110)pick();else draw3d();return}settle()};
