@@ -208,7 +208,7 @@ $('chips').innerHTML=G.pockets.map((p,k)=>`<div class="chip${k===G.player?' on':
 [...$('chips').children].forEach(el=>el.onclick=()=>openPocket(+el.dataset.k));
 const on=$('chips').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
 $('cnt').textContent='剩 '+remaining()+' / '+G.total+' 張';draw3d()}
-function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>${IC.party}</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
+function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=n>抽完了</div><div class=s>點選上方名稱<br>查看回答過的題目</div>';st.appendChild(e);return}
 const [a,b]=col(),i=deckInfo();const base=Math.round(pos);const items=[];
 for(let o=-2;o<=2;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
 items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div>`;
