@@ -170,7 +170,7 @@ const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150d
 $('qtag').textContent=i.emoji+' '+i.short;$('qtext').textContent=q;$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
 $('qcard').classList.remove('flip');$('ov').classList.remove('hidden');setTimeout(()=>{$('qcard').classList.add('flip');setTimeout(confetti,350)},250);if(navigator.vibrate)navigator.vibrate(20)}
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
-$('skip').onclick=()=>{cur=null;$('ov').classList.add('hidden');renderGame()};
+$('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
 $('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
 $('restart').onclick=()=>{if(!confirm('要重新開始嗎？所有人的口袋會清空。'))return;$('start').onclick()};
 $('back').onclick=()=>show('setup');
