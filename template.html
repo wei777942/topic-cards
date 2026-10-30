@@ -179,7 +179,7 @@ $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
 $('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
 $('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
-$('restart').onclick=()=>{if(!confirm('要重新開始嗎？所有人的口袋會清空。'))return;$('start').onclick()};
+let rsT=0;$('restart').onclick=()=>{const b=$('restart');if(!rsT){b.textContent='⚠️ 再按一次確認';b.style.background='#c0392b';b.style.color='#fff';rsT=setTimeout(()=>{rsT=0;b.textContent='🔄 重新開始';b.style.background='';b.style.color=''},3000);return}clearTimeout(rsT);rsT=0;b.textContent='🔄 重新開始';b.style.background='';b.style.color='';if(!confirm('確定要重新開始嗎？所有人的口袋會清空。'))return;$('start').onclick()};
 $('back').onclick=()=>show('setup');
 function openPocket(k){const p=G.pockets[k];const items=p.map(x=>{const d=DECKS.find(y=>y.id===x.deck);const c=THEME[x.deck]||THEME.custom;return`<div class=it><div class=m style="background:linear-gradient(150deg,${c[0]},${c[1]})">${d?d.emoji:'✏️'}</div><div>${esc(x.q)}</div></div>`}).join('')||'<p>還沒有收任何卡，輪到他就去抽一張吧！</p>';
 $('psheet').innerHTML=`<h3>🗂️ ${esc(name(k))}的口袋</h3><p>收了 ${p.length} 張卡</p>${items}<button class="btn sec" id="pclose">關閉</button>`;$('pocket').classList.remove('hidden');$('pclose').onclick=closePocket}
