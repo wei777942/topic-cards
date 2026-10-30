@@ -32,7 +32,7 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 /* wheel */
 .wrap{position:relative;width:min(86vw,340px);aspect-ratio:1;margin:40px auto 0}
 .ptr{position:absolute;top:-16px;left:50%;margin-left:-16px;border:16px solid transparent;border-top:30px solid var(--g);filter:drop-shadow(0 0 8px #ffb020);z-index:2}
-#wheel{width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 6px #ffc94d55,0 0 40px #ffb02077;transition:transform 4.5s cubic-bezier(.12,.75,.1,1)}
+#wheel{display:block;width:100%;height:100%;overflow:visible}.wrap::before{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 6px #ffc94d55,0 0 40px #ffb02077;pointer-events:none}
 .hub{position:absolute;top:50%;left:50%;width:72px;height:72px;margin:-36px;border-radius:50%;background:#1a1814;border:3px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:30px}
 .res{text-align:center;margin-top:34px;font-size:22px;font-weight:800;min-height:40px}.res b{color:var(--g);font-size:30px}
 /* game */
@@ -41,7 +41,7 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 .chip{flex:none;padding:8px 14px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff22;font-size:15px;white-space:nowrap}
 .chip.on{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;font-weight:800;box-shadow:0 0 16px #ffa50088}
 .chip i{font-style:normal;margin-left:6px;opacity:.85}
-.stage{position:relative;height:270px;margin-top:14px;overflow:visible;perspective:900px;touch-action:none}
+.stage{position:relative;height:290px;margin-top:24px;overflow:visible;perspective:900px;touch-action:none}
 .frame{position:absolute;top:12px;left:50%;width:180px;height:244px;margin-left:-90px;border-radius:24px;border:2px solid var(--g);box-shadow:0 0 30px #ffb02088,inset 0 0 20px #ffb02044;pointer-events:none}
 .c{position:absolute;top:29px;left:50%;width:154px;height:210px;margin-left:-77px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;box-shadow:0 14px 30px #000a;will-change:transform}
 .c .e{font-size:50px}.c .n{font-size:18px;margin-top:8px}.c .s{font-size:12px;opacity:.85;margin-top:4px}
@@ -90,10 +90,10 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 </div>
 
 <div id="game" class="scr hidden">
-<div class="top"><div style="font-size:34px">🃏</div><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點中間的牌或往下拖進卡槽</div></div>
+<div class="top"><div style="font-size:34px">🃏</div><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點一下就抽</div></div>
 <div class="chips" id="chips"></div>
 <div class="stage" id="stage"><div class="frame"></div></div>
-<div class="arr" style="letter-spacing:-6px">⌄⌄</div><div class="slot" id="slot"></div>
+<div class="sub" style="margin-top:6px;font-size:15px;color:var(--g);opacity:.85">👆 點中間的牌抽卡</div>
 <div class="cnt" id="cnt"></div>
 <div class="row"><button class="btn sec" id="shuf">🔀 洗牌</button><button class="btn sec" id="restart">🔄 重新開始</button></div>
 <button class="btn sec" id="back">回到設定</button>
@@ -134,10 +134,10 @@ let wheelRot=0,spinning=false;
 function buildWheel(){const n=S.n,R=155;let g='';for(let i=0;i<n;i++){const a0=i/n*360-90,a1=(i+1)/n*360-90,r0=a0*Math.PI/180,r1=a1*Math.PI/180,am=(a0+a1)/2;
 g+=`<path d="M0 0L${R*Math.cos(r0)} ${R*Math.sin(r0)}A${R} ${R} 0 ${n<2?1:0} 1 ${R*Math.cos(r1)} ${R*Math.sin(r1)}Z" fill="${WC[i%12]}" stroke="#0e0d0b" stroke-width="3"/>`;
 const fs=n>8?14:n>5?17:21;g+=`<text transform="rotate(${am}) translate(${R*0.62} 0)" fill="#fff" font-size="${fs}" font-weight="800" text-anchor="middle" dominant-baseline="middle">${esc(name(i).slice(0,6))}</text>`}
-$('wheel').innerHTML=g;$('wheel').style.transition='none';wheelRot=0;$('wheel').style.transform='rotate(0deg)';$('res').innerHTML='👆 按下面的按鈕轉轉盤';$('spinBtn').textContent='轉！';spinning=false;$('spinBtn').dataset.done=''}
+$('wheel').innerHTML='<g id="wg">'+g+'</g>';wheelRot=0;$('res').innerHTML='👆 按下面的按鈕轉轉盤';$('spinBtn').textContent='轉！';spinning=false;$('spinBtn').dataset.done=''}
 $('spinBtn').onclick=()=>{if(spinning)return;if($('spinBtn').dataset.done){startGame();return}
 spinning=true;const n=S.n,win=Math.floor(Math.random()*n);const seg=360/n;const center=(win+.5)*seg;const jitter=(Math.random()-.5)*seg*.7;
-const target=360*6+(360-center)+jitter;void $('wheel').offsetWidth;$('wheel').style.transition='';wheelRot=target;$('wheel').style.transform=`rotate(${target}deg)`;$('res').textContent='轉啊轉…';
+const target=360*6+(360-center)+jitter;const t0=performance.now(),D=4500;const st=()=>{const k=Math.min(1,(performance.now()-t0)/D),e=1-Math.pow(1-k,4);$('wg').setAttribute('transform','rotate('+(target*e)+')');if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st);$('res').textContent='轉啊轉…';
 tick(4500);setTimeout(()=>{spinning=false;G.player=win;$('res').innerHTML='🎉 由 <b>'+esc(name(win))+'</b> 先開始！';$('spinBtn').textContent='開始抽卡 👉';$('spinBtn').dataset.done='1';confetti()},4600)};
 function tick(ms){if(navigator.vibrate){let t=0;const f=()=>{if(t>ms)return;navigator.vibrate(5);t+=60+t/10;setTimeout(f,60+t/10)};f()}}
 $('spinBack').onclick=()=>show('setup');
@@ -158,11 +158,11 @@ const ad=Math.abs(d);if(ad<.5)e.classList.add('mid');e.style.transform=`translat
 function settle(){cancelAnimationFrame(anim);const step=()=>{if(Math.abs(vel)>.002){pos+=vel;vel*=.93;draw3d();anim=requestAnimationFrame(step)}else{const t=Math.round(pos);const s2=()=>{pos+=(t-pos)*.25;if(Math.abs(t-pos)<.01){pos=t;draw3d();return}draw3d();anim=requestAnimationFrame(s2)};s2()}};step()}
 (function(){const st=$('stage');let sx,sy,lx,lt,moved,mode;
 st.addEventListener('pointerdown',e=>{if(!remaining())return;cancelAnimationFrame(anim);sx=lx=e.clientX;sy=e.clientY;lt=performance.now();moved=false;mode=null;vel=0;dragging=true;st.setPointerCapture(e.pointerId)});
-st.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(!mode&&(Math.abs(dx)>8||Math.abs(dy)>8)){mode=Math.abs(dy)>Math.abs(dx)&&dy>0?'down':'side';moved=true}
+st.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(!mode&&(Math.abs(dx)>8||Math.abs(dy)>8)){mode='side';moved=true}
 if(mode==='side'){const now=performance.now();const ddx=e.clientX-lx;pos-=ddx/120;vel=-ddx/120/Math.max(1,(now-lt)/16);lx=e.clientX;lt=now;draw3d()}
-if(mode==='down'){const c=[...st.querySelectorAll('.c')].pop();if(c){c.style.transform=`translateY(${Math.max(0,dy)}px) scale(${1-Math.min(dy,200)/800})`}$('slot').classList.toggle('hot',dy>110)}});
-const end=e=>{if(!dragging)return;dragging=false;const dy=e.clientY-sy;$('slot').classList.remove('hot');
-if(!moved){pick();return}if(mode==='down'){if(dy>110)pick();else draw3d();return}settle()};
+});
+const end=e=>{if(!dragging)return;dragging=false;
+if(!moved){pick();return}settle()};
 st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end)})();
 let cur=null;
 function pick(){if(!remaining())return;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
