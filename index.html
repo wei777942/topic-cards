@@ -91,7 +91,7 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 <div class="wrap"><div class="ptr"></div><svg id="wheel" viewBox="-160 -160 320 320"></svg><div class="hub">🎯</div></div>
 <div class="res" id="res">👆 按下面的按鈕轉轉盤</div>
 <button class="btn" id="spinBtn">轉！</button>
-<button class="btn sec" id="spinBack">回到設定</button>
+<button class="btn sec" id="spinBack">重新開始</button>
 </div>
 
 <div id="game" class="scr hidden">
@@ -101,7 +101,7 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 <div class="sub" style="margin-top:6px;font-size:15px;color:var(--g);opacity:.85">👆 點中間的牌抽卡</div>
 <div class="cnt" id="cnt"></div>
 <div class="row"><button class="btn sec" id="shuf">🔀 洗牌</button></div>
-<button class="btn sec" id="back">回到設定</button>
+<button class="btn sec" id="back">🔄 重新開始</button>
 </div>
 
 <div id="ov" class="ov hidden">
@@ -155,7 +155,7 @@ $('chips').innerHTML=G.pockets.map((p,k)=>`<div class="chip${k===G.player?' on':
 [...$('chips').children].forEach(el=>el.onclick=()=>openPocket(+el.dataset.k));
 const on=$('chips').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
 $('cnt').textContent='剩 '+remaining()+' / '+G.total+' 張';draw3d()}
-function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>🎉</div><div class=n>抽完了</div><div class=s>按洗牌或回到設定</div>';st.appendChild(e);return}
+function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>🎉</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
 const [a,b]=col(),i=deckInfo();const base=Math.round(pos);const items=[];
 for(let o=-2;o<=2;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
 items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div><div class=n>話題卡</div><div class=s>${esc(i.short)}</div>`;
@@ -179,7 +179,7 @@ $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
 $('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
 $('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
-$('back').onclick=()=>{if(!confirm('確定要回到設定嗎？這一局會結束。'))return;show('setup')};
+$('back').onclick=()=>{if(!confirm('確定要重新開始嗎？這一局和大家的口袋會清空。'))return;show('setup')};
 function openPocket(k){const p=G.pockets[k];const items=p.map(x=>{const d=DECKS.find(y=>y.id===x.deck);const c=THEME[x.deck]||THEME.custom;return`<div class=it><div class=m style="background:linear-gradient(150deg,${c[0]},${c[1]})">${d?d.emoji:'✏️'}</div><div>${esc(x.q)}</div></div>`}).join('')||'<p>還沒有收任何卡，輪到他就去抽一張吧！</p>';
 $('psheet').innerHTML=`<h3>🗂️ ${esc(name(k))}的口袋</h3><p>收了 ${p.length} 張卡</p>${items}<button class="btn sec" id="pclose">關閉</button>`;$('pocket').classList.remove('hidden');$('pclose').onclick=closePocket}
 function closePocket(){$('pocket').classList.add('hidden')}$('pdim').onclick=closePocket;
