@@ -130,18 +130,18 @@ input::placeholder,textarea::placeholder{color:#0006}
 
 <div id="setup" class="scr">
 <h1 style="margin-top:34px">很高興認識你</h1><p class="sub" style="font-size:17px;letter-spacing:1px;color:var(--g);opacity:.9">Nice to meet you</p>
-<h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> 人數與名字</h2>
+
 <div class="panel"><div class="stepper"><button id="minus">−</button><span id="n">4</span><button id="plus">＋</button></div><div class="names" id="names"></div></div>
-<h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="12" height="16" rx="2"/><path d="M8 6V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg> 選個主題</h2><div class="decks" id="decks"></div>
+<div class="panel" style="margin-top:14px"><div class="decks" id="decks"></div></div>
 <div id="customBox" class="hidden"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> 自訂題目（一行一題）</h2><textarea id="custom" rows="7" placeholder="貼上你的題目，一行一題"></textarea></div>
-<button class="btn" id="start" style="margin-top:22px">開始 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<button class="btn" id="start" style="margin-top:22px">START <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
 </div>
 
 <div id="spin" class="scr hidden">
 <h1 style="margin-top:30px">誰先開始？</h1><p class="sub">轉一下，看命運選中誰</p>
 <div class="wrap"><div class="ptr"></div><svg id="wheel" viewBox="-160 -160 320 320"></svg><div class="hub"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div></div>
 <div class="res" id="res">按下面的按鈕轉轉盤</div>
-<button class="btn" id="spinBtn">轉！</button>
+<button class="btn" id="spinBtn">SPIN</button>
 <button class="btn sec" id="spinBack">重新開始</button>
 </div>
 
@@ -192,11 +192,11 @@ let wheelRot=0,spinning=false;
 function buildWheel(){const n=S.n,R=155;let g='';for(let i=0;i<n;i++){const a0=i/n*360-90,a1=(i+1)/n*360-90,r0=a0*Math.PI/180,r1=a1*Math.PI/180,am=(a0+a1)/2;
 g+=`<path d="M0 0L${R*Math.cos(r0)} ${R*Math.sin(r0)}A${R} ${R} 0 ${n<2?1:0} 1 ${R*Math.cos(r1)} ${R*Math.sin(r1)}Z" fill="${(n%2&&i==n-1)?'#ffd76b':i%2?'#111':'#fffdf8'}" stroke="#111" stroke-width="3"/>`;
 const fs=n>8?14:n>5?17:21;g+=`<text transform="rotate(${am}) translate(${R*0.62} 0)" fill="${(i%2&&!(n%2&&i==n-1))?'#fff':'#111'}" font-size="${fs}" font-weight="800" text-anchor="middle" dominant-baseline="middle">${esc(name(i).slice(0,6))}</text>`}
-$('wheel').innerHTML='<g id="wg">'+g+'</g>';wheelRot=0;$('res').innerHTML='按下面的按鈕轉轉盤';$('spinBtn').textContent='轉！';spinning=false;$('spinBtn').dataset.done=''}
+$('wheel').innerHTML='<g id="wg">'+g+'</g>';wheelRot=0;$('res').innerHTML='按下面的按鈕轉轉盤';$('spinBtn').textContent='SPIN';spinning=false;$('spinBtn').dataset.done=''}
 $('spinBtn').onclick=()=>{if(spinning)return;if($('spinBtn').dataset.done){startGame();return}
 spinning=true;const n=S.n,win=Math.floor(Math.random()*n);const seg=360/n;const center=(win+.5)*seg;const jitter=(Math.random()-.5)*seg*.7;
 const target=360*6+(360-center)+jitter;const t0=performance.now(),D=2250;const st=()=>{const k=Math.min(1,(performance.now()-t0)/D),e=1-Math.pow(1-k,4);$('wg').setAttribute('transform','rotate('+(target*e)+')');if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st);$('res').textContent='轉啊轉…';
-tick(4500);setTimeout(()=>{spinning=false;G.player=win;$('res').innerHTML=IC.party+' 由 <b>'+esc(name(win))+'</b> 先開始！';$('spinBtn').innerHTML='開始抽卡 '+IC.arrow;$('spinBtn').dataset.done='1';confetti()},2350)};
+tick(4500);setTimeout(()=>{spinning=false;G.player=win;$('res').innerHTML='由 <b>'+esc(name(win))+'</b> 先開始！';$('spinBtn').innerHTML='開始抽卡';$('spinBtn').dataset.done='1';confetti()},2350)};
 function tick(ms){if(navigator.vibrate){let t=0;const f=()=>{if(t>ms)return;navigator.vibrate(5);t+=60+t/10;setTimeout(f,60+t/10)};f()}}
 $('spinBack').onclick=()=>show('setup');
 /* game */
