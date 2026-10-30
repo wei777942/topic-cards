@@ -121,42 +121,49 @@ input::placeholder,textarea::placeholder{color:#0006}
 .qfront .no{bottom:24px!important;color:#0008!important}
 .btn{white-space:nowrap}.ov .btn::before,.ov .btn::after{content:none}
 .ov{background:radial-gradient(circle at 50% 45%,#fff8e6,#f6f1e7 70%)!important}
+.ic{width:1em;height:1em;vertical-align:-.15em;display:inline-block}
+.deck b .ic{width:36px;height:36px}.c .e .ic{width:54px;height:54px}.hub .ic{width:30px;height:30px}
+.chip i .ic{width:15px;height:15px;margin-right:3px}.deck.on b{color:#ffd76b}
+.conf{color:#111;font-size:20px}.conf:nth-child(2n){color:#ffb020}
+#qen{margin-top:14px;font-size:14px;font-weight:500;line-height:1.45;color:#0009;font-family:"Avenir Next",-apple-system,sans-serif;font-style:italic}
 </style></head><body>
 
 <div id="setup" class="scr">
-<div style="text-align:center;font-size:42px;margin-top:10px">🃏</div><h1>很高興認識你</h1><p class="sub" style="font-size:17px;letter-spacing:1px;color:var(--g);opacity:.9">Nice to meet you</p>
-<h2>👥 人數與名字</h2>
+<h1 style="margin-top:34px">很高興認識你</h1><p class="sub" style="font-size:17px;letter-spacing:1px;color:var(--g);opacity:.9">Nice to meet you</p>
+<h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> 人數與名字</h2>
 <div class="panel"><div class="stepper"><button id="minus">−</button><span id="n">4</span><button id="plus">＋</button></div><div class="names" id="names"></div></div>
-<h2>🎴 選個主題</h2><div class="decks" id="decks"></div>
-<div id="customBox" class="hidden"><h2>✏️ 自訂題目（一行一題）</h2><textarea id="custom" rows="7" placeholder="貼上你的題目，一行一題"></textarea></div>
-<button class="btn" id="start" style="margin-top:22px">開始 👉</button>
+<h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="12" height="16" rx="2"/><path d="M8 6V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg> 選個主題</h2><div class="decks" id="decks"></div>
+<div id="customBox" class="hidden"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> 自訂題目（一行一題）</h2><textarea id="custom" rows="7" placeholder="貼上你的題目，一行一題"></textarea></div>
+<button class="btn" id="start" style="margin-top:22px">開始 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
 </div>
 
 <div id="spin" class="scr hidden">
 <h1 style="margin-top:30px">誰先開始？</h1><p class="sub">轉一下，看命運選中誰</p>
-<div class="wrap"><div class="ptr"></div><svg id="wheel" viewBox="-160 -160 320 320"></svg><div class="hub">🎯</div></div>
-<div class="res" id="res">👆 按下面的按鈕轉轉盤</div>
+<div class="wrap"><div class="ptr"></div><svg id="wheel" viewBox="-160 -160 320 320"></svg><div class="hub"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></div></div>
+<div class="res" id="res">按下面的按鈕轉轉盤</div>
 <button class="btn" id="spinBtn">轉！</button>
 <button class="btn sec" id="spinBack">重新開始</button>
 </div>
 
 <div id="game" class="scr hidden">
-<div class="top"><div style="font-size:34px">🃏</div><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點一下就抽</div></div>
+<div class="top"><div class="who" id="who"></div><div class="sub" style="font-size:14px;margin-top:4px">左右滑動轉牌，點一下就抽</div></div>
 <div class="chips" id="chips"></div>
 <div class="stage" id="stage"><div class="frame"></div></div>
-<div class="sub" style="margin-top:6px;font-size:15px;color:var(--g);opacity:.85">👆 點中間的牌抽卡</div>
+<div class="sub" style="margin-top:6px;font-size:15px;color:var(--g);opacity:.85"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V4.5a1.5 1.5 0 0 1 3 0V12l3.5-.7a2 2 0 0 1 2.3 2.3L17 18a4 4 0 0 1-4 3h-1.5a4 4 0 0 1-3.3-1.7L5.5 15a1.6 1.6 0 0 1 2.4-2.1L9 14"/></svg> 點中間的牌抽卡</div>
 <div class="cnt" id="cnt"></div>
-<div class="row"><button class="btn sec" id="shuf">🔀 洗牌</button></div>
-<button class="btn sec" id="back">🔄 重新開始</button>
+<div class="row"><button class="btn sec" id="shuf"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg> 洗牌</button></div>
+<button class="btn sec" id="back"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重新開始</button>
 </div>
 
 <div id="ov" class="ov hidden">
-<div class="qwrap"><div class="qcard" id="qcard"><div class="qf qback" id="qback"></div><div class="qf qfront"><small id="qtag"></small><b class="cn tl" id="cn1"></b><b class="cn br" id="cn2"></b><div id="qtext"></div><div class="no" id="qno"></div></div></div></div>
-<div class="tap" id="tap">👆 點一下翻開</div><div class="row hidden" id="qbtns"><button class="btn sec" id="skip">跳過</button><button class="btn" id="keep" style="flex:2">已回答 👉</button></div>
+<div class="qwrap"><div class="qcard" id="qcard"><div class="qf qback" id="qback"></div><div class="qf qfront"><small id="qtag"></small><b class="cn tl" id="cn1"></b><b class="cn br" id="cn2"></b><div id="qtext"></div><div id="qen"></div><div class="no" id="qno"></div></div></div></div>
+<div class="tap" id="tap"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V4.5a1.5 1.5 0 0 1 3 0V12l3.5-.7a2 2 0 0 1 2.3 2.3L17 18a4 4 0 0 1-4 3h-1.5a4 4 0 0 1-3.3-1.7L5.5 15a1.6 1.6 0 0 1 2.4-2.1L9 14"/></svg> 點一下翻開</div><div class="row hidden" id="qbtns"><button class="btn sec" id="skip">跳過</button><button class="btn" id="keep" style="flex:2">已回答 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
 </div>
 <div id="pocket" class="hidden"><div class="dim" id="pdim"></div><div class="sheet" id="psheet"></div></div>
 
 <script>
+const IC={"hand": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8\"/><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/></svg>", "smile": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 14s1.5 2 4 2 4-2 4-2\"/><line x1=\"9\" y1=\"9\" x2=\"9.01\" y2=\"9\"/><line x1=\"15\" y1=\"9\" x2=\"15.01\" y2=\"9\"/></svg>", "users": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/></svg>", "heart": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>", "hearts": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M16 19.5 10.5 14C9 12.6 8 11.3 8 9.7A3.7 3.7 0 0 1 11.7 6c1.2 0 2.1.4 3.3 1.5C16.2 6.4 17.1 6 18.3 6A3.7 3.7 0 0 1 22 9.7c0 1.6-1 2.9-2.5 4.3Z\"/><path d=\"M8.5 16.5 4 12C2.8 10.8 2 9.8 2 8.4A3.4 3.4 0 0 1 5.4 5c.7 0 1.3.1 2 .5\"/></svg>", "pen": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z\"/><path d=\"m15 5 4 4\"/></svg>", "cards": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"6\" width=\"12\" height=\"16\" rx=\"2\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"/></svg>", "arrow": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg>", "tap": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 9V4.5a1.5 1.5 0 0 1 3 0V12l3.5-.7a2 2 0 0 1 2.3 2.3L17 18a4 4 0 0 1-4 3h-1.5a4 4 0 0 1-3.3-1.7L5.5 15a1.6 1.6 0 0 1 2.4-2.1L9 14\"/></svg>", "shuffle": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22\"/><path d=\"m18 2 4 4-4 4\"/><path d=\"M2 6h1.9c1.5 0 2.9.9 3.6 2.2\"/><path d=\"M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8\"/><path d=\"m18 14 4 4-4 4\"/></svg>", "rotate": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>", "bag": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z\"/><path d=\"M3 6h18M16 10a4 4 0 0 1-8 0\"/></svg>", "star": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z\"/></svg>", "party": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5.8 11.3 2 22l10.7-3.8\"/><path d=\"M4 3h.01M22 8h.01M15 2h.01M22 20h.01\"/><path d=\"m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10\"/><path d=\"M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z\"/></svg>"};const DM={icebreak:'hand',acquaint:'smile',friend:'users',close:'heart',soulmate:'hearts',custom:'pen'};function DI(id){return IC[DM[id]||'pen']}
+
 const DECKS=__DECKS__;
 const THEME={icebreak:['#f97316','#fbbf24'],acquaint:['#0ea5e9','#67e8f9'],friend:['#10b981','#a3e635'],close:['#eab308','#fde68a'],soulmate:['#e11d48','#fb7185'],custom:['#8b5cf6','#c4b5fd']};
 const WC=['#f97316','#0ea5e9','#10b981','#e11d48','#8b5cf6','#eab308','#14b8a6','#ec4899','#6366f1','#84cc16','#f43f5e','#06b6d4'];
@@ -167,13 +174,13 @@ let G=null; // {pile:[], total, player, pockets:[[{q,deck}]], drawn}
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
 function show(id){['setup','spin','game'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
-function deckInfo(){const d=DECKS.find(x=>x.id===S.deck);return d?{emoji:d.emoji,name:d.name,short:d.name.replace(/（.*/,'')}:{emoji:'✏️',name:'自訂主題',short:'自訂'}}
+function deckInfo(){const d=DECKS.find(x=>x.id===S.deck);return d?{emoji:DI(d.id),name:d.name,short:d.name.replace(/（.*/,'')}:{emoji:DI('custom'),name:'自訂主題',short:'自訂'}}
 function col(){return THEME[S.deck]||THEME.custom}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function name(i){return(S.names[i]||'').trim()||('朋友 '+(i+1))}
 /* setup */
 function renderNames(){const box=$('names');box.innerHTML='';for(let i=0;i<S.n;i++){const inp=document.createElement('input');inp.placeholder='朋友 '+(i+1);inp.value=S.names[i]||'';inp.oninput=()=>{S.names[i]=inp.value;save()};box.appendChild(inp)}$('n').textContent=S.n}
-function renderDecks(){const box=$('decks');box.innerHTML='';[...DECKS.map(d=>{const m=d.name.match(/^(.*?)（(.*)）$/)||[0,d.name,''];return{id:d.id,html:'<b>'+d.emoji+'</b>'+m[1]+'<small>'+m[2]+'</small>'}}),{id:'custom',html:'<b>✏️</b>自訂主題<small>貼上自己的題目</small>'}].forEach(d=>{const el=document.createElement('div');el.className='deck'+(S.deck===d.id?' on':'');el.innerHTML=d.html;el.onclick=()=>{S.deck=d.id;save();renderDecks()};box.appendChild(el)});$('customBox').classList.toggle('hidden',S.deck!=='custom')}
+function renderDecks(){const box=$('decks');box.innerHTML='';[...DECKS.map(d=>{const m=d.name.match(/^(.*?)（(.*)）$/)||[0,d.name,''];return{id:d.id,html:'<b>'+DI(d.id)+'</b>'+m[1]+'<small>'+m[2]+'</small>'}}),{id:'custom',html:'<b>'+DI('custom')+'</b>自訂主題<small>貼上自己的題目</small>'}].forEach(d=>{const el=document.createElement('div');el.className='deck'+(S.deck===d.id?' on':'');el.innerHTML=d.html;el.onclick=()=>{S.deck=d.id;save();renderDecks()};box.appendChild(el)});$('customBox').classList.toggle('hidden',S.deck!=='custom')}
 $('minus').onclick=()=>{if(S.n>2){S.n--;save();renderNames()}};
 $('plus').onclick=()=>{if(S.n<12){S.n++;save();renderNames()}};
 $('custom').value=S.custom;$('custom').oninput=e=>{S.custom=e.target.value;save()};
@@ -185,11 +192,11 @@ let wheelRot=0,spinning=false;
 function buildWheel(){const n=S.n,R=155;let g='';for(let i=0;i<n;i++){const a0=i/n*360-90,a1=(i+1)/n*360-90,r0=a0*Math.PI/180,r1=a1*Math.PI/180,am=(a0+a1)/2;
 g+=`<path d="M0 0L${R*Math.cos(r0)} ${R*Math.sin(r0)}A${R} ${R} 0 ${n<2?1:0} 1 ${R*Math.cos(r1)} ${R*Math.sin(r1)}Z" fill="${(n%2&&i==n-1)?'#ffd76b':i%2?'#111':'#fffdf8'}" stroke="#111" stroke-width="3"/>`;
 const fs=n>8?14:n>5?17:21;g+=`<text transform="rotate(${am}) translate(${R*0.62} 0)" fill="${(i%2&&!(n%2&&i==n-1))?'#fff':'#111'}" font-size="${fs}" font-weight="800" text-anchor="middle" dominant-baseline="middle">${esc(name(i).slice(0,6))}</text>`}
-$('wheel').innerHTML='<g id="wg">'+g+'</g>';wheelRot=0;$('res').innerHTML='👆 按下面的按鈕轉轉盤';$('spinBtn').textContent='轉！';spinning=false;$('spinBtn').dataset.done=''}
+$('wheel').innerHTML='<g id="wg">'+g+'</g>';wheelRot=0;$('res').innerHTML='按下面的按鈕轉轉盤';$('spinBtn').textContent='轉！';spinning=false;$('spinBtn').dataset.done=''}
 $('spinBtn').onclick=()=>{if(spinning)return;if($('spinBtn').dataset.done){startGame();return}
 spinning=true;const n=S.n,win=Math.floor(Math.random()*n);const seg=360/n;const center=(win+.5)*seg;const jitter=(Math.random()-.5)*seg*.7;
 const target=360*6+(360-center)+jitter;const t0=performance.now(),D=2250;const st=()=>{const k=Math.min(1,(performance.now()-t0)/D),e=1-Math.pow(1-k,4);$('wg').setAttribute('transform','rotate('+(target*e)+')');if(k<1)requestAnimationFrame(st)};requestAnimationFrame(st);$('res').textContent='轉啊轉…';
-tick(4500);setTimeout(()=>{spinning=false;G.player=win;$('res').innerHTML='🎉 由 <b>'+esc(name(win))+'</b> 先開始！';$('spinBtn').textContent='開始抽卡 👉';$('spinBtn').dataset.done='1';confetti()},2350)};
+tick(4500);setTimeout(()=>{spinning=false;G.player=win;$('res').innerHTML=IC.party+' 由 <b>'+esc(name(win))+'</b> 先開始！';$('spinBtn').innerHTML='開始抽卡 '+IC.arrow;$('spinBtn').dataset.done='1';confetti()},2350)};
 function tick(ms){if(navigator.vibrate){let t=0;const f=()=>{if(t>ms)return;navigator.vibrate(5);t+=60+t/10;setTimeout(f,60+t/10)};f()}}
 $('spinBack').onclick=()=>show('setup');
 /* game */
@@ -197,15 +204,15 @@ let pos=0,vel=0,dragging=false,anim=null;
 function startGame(){show('game');renderGame()}
 function remaining(){return G.pile.length}
 function renderGame(){const i=deckInfo();$('who').innerHTML='輪到 <b>'+esc(name(G.player))+'</b>';
-$('chips').innerHTML=G.pockets.map((p,k)=>`<div class="chip${k===G.player?' on':''}" data-k="${k}">${esc(name(k))}<i>🗂️${p.length}</i></div>`).join('');
+$('chips').innerHTML=G.pockets.map((p,k)=>`<div class="chip${k===G.player?' on':''}" data-k="${k}">${esc(name(k))}<i>${IC.bag}${p.length}</i></div>`).join('');
 [...$('chips').children].forEach(el=>el.onclick=()=>openPocket(+el.dataset.k));
 const on=$('chips').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
 $('cnt').textContent='剩 '+remaining()+' / '+G.total+' 張';draw3d()}
-function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>🎉</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
+function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>${IC.party}</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
 const [a,b]=col(),i=deckInfo();const base=Math.round(pos);const items=[];
 for(let o=-2;o<=2;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
 items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div><div class=n>話題卡</div><div class=s>${esc(i.short)}</div>`;
-const ad=Math.abs(d);if(ad<.5)e.classList.add('mid');e.style.transform=`perspective(900px) translateX(${d*120}px) translateZ(${-Math.min(ad,2.5)*120}px) rotateY(${Math.max(-60,Math.min(60,-d*35))}deg)`;e.style.opacity=Math.max(0,1-ad*.25);e.style.filter=`brightness(${1-ad*.22}) hue-rotate(${((idx%5)-2)*14}deg)`;e.style.zIndex=10-Math.round(ad);st.appendChild(e)})}
+const ad=Math.abs(d);if(ad<.5)e.classList.add('mid');e.style.transform=`perspective(900px) translateX(${d*120}px) translateZ(${-Math.min(ad,2.5)*120}px) rotateY(${Math.max(-60,Math.min(60,-d*35))}deg)`;e.style.opacity=Math.max(0,1-ad*.25);e.style.filter=`brightness(${1-ad*.08})`;e.style.zIndex=10-Math.round(ad);st.appendChild(e)})}
 function settle(){cancelAnimationFrame(anim);const step=()=>{if(Math.abs(vel)>.002){pos+=vel;vel*=.93;draw3d();anim=requestAnimationFrame(step)}else{const t=Math.round(pos);const s2=()=>{pos+=(t-pos)*.25;if(Math.abs(t-pos)<.01){pos=t;draw3d();return}draw3d();anim=requestAnimationFrame(s2)};s2()}};step()}
 (function(){const st=$('stage');let sx,sy,lx,lt,moved,mode;
 st.addEventListener('pointerdown',e=>{if(!remaining())return;cancelAnimationFrame(anim);sx=lx=e.clientX;sy=e.clientY;lt=performance.now();moved=false;mode=null;vel=0;dragging=true;st.setPointerCapture(e.pointerId)});
@@ -219,16 +226,16 @@ let cur=null;
 let busy=false;function pick(){if(!remaining()||busy)return;busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
 function reveal(){busy=false;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
 const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div><div style="font-size:22px;font-weight:800;margin-top:10px">話題卡</div>`;
-$('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
+$('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;{const D=DECKS.find(x=>x.id===S.deck),j=D?D.cards.indexOf(q):-1;$('qen').textContent=(D&&D.en&&j>=0)?D.en[j]:''}$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
 $('qcard').classList.remove('flip');$('tap').classList.remove('hidden');$('qbtns').classList.add('hidden');const w=document.querySelector('.qwrap');w.classList.remove('rise');void w.offsetWidth;w.classList.add('rise');$('ov').classList.remove('hidden');if(navigator.vibrate)navigator.vibrate(20)}
 $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard').classList.add('flip');$('tap').classList.add('hidden');if(navigator.vibrate)navigator.vibrate(15);setTimeout(()=>{confetti();$('qbtns').classList.remove('hidden')},1300)};
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
 $('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
 $('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
 $('back').onclick=()=>{if(!confirm('確定要重新開始嗎？這一局和大家的口袋會清空。'))return;show('setup')};
-function openPocket(k){const p=G.pockets[k];const items=p.map(x=>{const d=DECKS.find(y=>y.id===x.deck);const c=THEME[x.deck]||THEME.custom;return`<div class=it><div class=m style="background:linear-gradient(150deg,${c[0]},${c[1]})">${d?d.emoji:'✏️'}</div><div>${esc(x.q)}</div></div>`}).join('')||'<p>還沒有收任何卡，輪到他就去抽一張吧！</p>';
-$('psheet').innerHTML=`<h3>🗂️ ${esc(name(k))}的口袋</h3><p>收了 ${p.length} 張卡</p>${items}<button class="btn sec" id="pclose">關閉</button>`;$('pocket').classList.remove('hidden');$('pclose').onclick=closePocket}
+function openPocket(k){const p=G.pockets[k];const items=p.map(x=>{const d=DECKS.find(y=>y.id===x.deck);const c=THEME[x.deck]||THEME.custom;return`<div class=it><div class=m style="background:linear-gradient(150deg,${c[0]},${c[1]})">${DI(x.deck)}</div><div>${esc(x.q)}</div></div>`}).join('')||'<p>還沒有收任何卡，輪到他就去抽一張吧！</p>';
+$('psheet').innerHTML=`<h3>${IC.bag} ${esc(name(k))}的口袋</h3><p>收了 ${p.length} 張卡</p>${items}<button class="btn sec" id="pclose">關閉</button>`;$('pocket').classList.remove('hidden');$('pclose').onclick=closePocket}
 function closePocket(){$('pocket').classList.add('hidden')}$('pdim').onclick=closePocket;
-function confetti(){const e=['✨','🎉','💬','⭐','🎈'];for(let i=0;i<16;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%5];s.style.setProperty('--x',(Math.random()*320-160)+'px');s.style.setProperty('--y',(Math.random()*-320-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1100)}}
+function confetti(){const e=['✦','✧','★','✦','●'];for(let i=0;i<16;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%5];s.style.setProperty('--x',(Math.random()*320-160)+'px');s.style.setProperty('--y',(Math.random()*-320-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1100)}}
 renderNames();renderDecks();
 </script></body></html>
