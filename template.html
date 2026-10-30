@@ -122,7 +122,7 @@ input::placeholder,textarea::placeholder{color:#0006}
 .btn{white-space:nowrap}.ov .btn::before,.ov .btn::after{content:none}
 .ov{background:radial-gradient(circle at 50% 45%,#fff8e6,#f6f1e7 70%)!important}
 .ic{width:1em;height:1em;vertical-align:-.15em;display:inline-block}
-.deck b .ic{width:36px;height:36px}.c .e .ic{width:54px;height:54px}.hub .ic{width:30px;height:30px}
+.deck b .ic{width:36px;height:36px}.c .e .ic{width:74px;height:74px}.hub .ic{width:30px;height:30px}
 .chip i .ic{width:15px;height:15px;margin-right:3px}.deck.on b{color:#ffd76b}
 .conf{color:#111;font-size:20px}.conf:nth-child(2n){color:#ffb020}
 #qen{margin-top:14px;font-size:14px;font-weight:500;line-height:1.45;color:#0009;font-family:"Avenir Next",-apple-system,sans-serif;font-style:italic}
@@ -211,7 +211,7 @@ $('cnt').textContent='剩 '+remaining()+' / '+G.total+' 張';draw3d()}
 function draw3d(){const st=$('stage');st.querySelectorAll('.c').forEach(e=>e.remove());const n=remaining();if(!n){const e=document.createElement('div');e.className='c';e.style.background='#ffffff10';e.innerHTML='<div class=e>${IC.party}</div><div class=n>抽完了</div><div class=s>按洗牌或重新開始</div>';st.appendChild(e);return}
 const [a,b]=col(),i=deckInfo();const base=Math.round(pos);const items=[];
 for(let o=-2;o<=2;o++){const idx=((base+o)%n+n)%n;if(n<7&&Math.abs(o)>Math.floor((n-1)/2)+(o>0&&n%2===0?1:0))continue;items.push([base+o-pos,idx])}
-items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div><div class=n>話題卡</div><div class=s>${esc(i.short)}</div>`;
+items.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0])).forEach(([d,idx])=>{const e=document.createElement('div');e.className='c';e.style.background=`linear-gradient(150deg,${a},${b})`;e.innerHTML=`<div class=e>${i.emoji}</div>`;
 const ad=Math.abs(d);if(ad<.5)e.classList.add('mid');e.style.transform=`perspective(900px) translateX(${d*120}px) translateZ(${-Math.min(ad,2.5)*120}px) rotateY(${Math.max(-60,Math.min(60,-d*35))}deg)`;e.style.opacity=Math.max(0,1-ad*.25);e.style.filter=`brightness(${1-ad*.08})`;e.style.zIndex=10-Math.round(ad);st.appendChild(e)})}
 function settle(){cancelAnimationFrame(anim);const step=()=>{if(Math.abs(vel)>.002){pos+=vel;vel*=.93;draw3d();anim=requestAnimationFrame(step)}else{const t=Math.round(pos);const s2=()=>{pos+=(t-pos)*.25;if(Math.abs(t-pos)<.01){pos=t;draw3d();return}draw3d();anim=requestAnimationFrame(s2)};s2()}};step()}
 (function(){const st=$('stage');let sx,sy,lx,lt,moved,mode;
@@ -225,7 +225,7 @@ st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end)})(
 let cur=null;
 let busy=false;function pick(){if(!remaining()||busy)return;busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
 function reveal(){busy=false;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
-const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div><div style="font-size:22px;font-weight:800;margin-top:10px">話題卡</div>`;
+const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div>`;
 $('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;{const D=DECKS.find(x=>x.id===S.deck),j=D?D.cards.indexOf(q):-1;$('qen').textContent=(D&&D.en&&j>=0)?D.en[j]:''}$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
 $('qcard').classList.remove('flip');$('tap').classList.remove('hidden');$('qbtns').classList.add('hidden');const w=document.querySelector('.qwrap');w.classList.remove('rise');void w.offsetWidth;w.classList.add('rise');$('ov').classList.remove('hidden');if(navigator.vibrate)navigator.vibrate(20)}
 $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard').classList.add('flip');$('tap').classList.add('hidden');if(navigator.vibrate)navigator.vibrate(15);setTimeout(()=>{confetti();$('qbtns').classList.remove('hidden')},1300)};
