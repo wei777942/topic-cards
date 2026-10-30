@@ -52,9 +52,14 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 .slot.hot::after{opacity:1;background:#ffe08a}
 .cnt{text-align:center;opacity:.6;font-size:14px;margin:12px 0 4px}
 /* reveal */
-.ov{position:fixed;inset:0;background:#000b;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-bottom:calc(env(safe-area-inset-bottom) + 24px)}
+.ov{position:fixed;inset:0;background:radial-gradient(circle at 50% 45%,#2a2620f2,#0e0d0bfa 70%);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-bottom:calc(env(safe-area-inset-bottom) + 24px)}
 .qwrap{perspective:1200px;width:min(84vw,330px);aspect-ratio:3/4}
-.qcard{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,1.3,.5,1)}
+.qcard{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 1.6s cubic-bezier(.45,0,.2,1)}
+.qwrap.rise{animation:rise .65s cubic-bezier(.2,1.3,.4,1)}@keyframes rise{from{transform:perspective(600px) rotateX(55deg) scale(.55) translateY(40px);opacity:.4}}
+.qcard:not(.flip) .qback{animation:glow 1.6s ease-in-out infinite}@keyframes glow{50%{box-shadow:0 0 60px #ffb020cc}}
+.qcard.flip{animation:lift 1.6s ease-in-out}@keyframes lift{40%{scale:1.08}}
+.tap{margin-top:18px;color:var(--g);font-size:17px;font-weight:700;animation:nud 1.4s infinite}@keyframes nud{50%{transform:translateY(5px)}}
+.c{transition:opacity .35s,transform .35s}
 .qcard.flip{transform:rotateY(180deg)}
 .qf{position:absolute;inset:0;border-radius:26px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
 .qback{border:4px solid #fff}
@@ -101,7 +106,7 @@ input::placeholder,textarea::placeholder{color:#ffffff66}
 
 <div id="ov" class="ov hidden">
 <div class="qwrap"><div class="qcard" id="qcard"><div class="qf qback" id="qback"></div><div class="qf qfront"><small id="qtag"></small><div id="qtext"></div><div class="no" id="qno"></div></div></div></div>
-<div class="row"><button class="btn sec" id="skip">跳過</button><button class="btn" id="keep" style="flex:2">收進口袋・下一位 👉</button></div>
+<div class="tap" id="tap">👆 點一下翻開</div><div class="row hidden" id="qbtns"><button class="btn sec" id="skip">跳過</button><button class="btn" id="keep" style="flex:2">已回答 👉</button></div>
 </div>
 <div id="pocket" class="hidden"><div class="dim" id="pdim"></div><div class="sheet" id="psheet"></div></div>
 
@@ -119,9 +124,9 @@ function show(id){['setup','spin','game'].forEach(x=>$(x).classList.toggle('hidd
 function deckInfo(){const d=DECKS.find(x=>x.id===S.deck);return d?{emoji:d.emoji,name:d.name,short:d.name.replace(/（.*/,'')}:{emoji:'✏️',name:'自訂主題',short:'自訂'}}
 function col(){return THEME[S.deck]||THEME.custom}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function name(i){return(S.names[i]||'').trim()||('玩家 '+(i+1))}
+function name(i){return(S.names[i]||'').trim()||('朋友 '+(i+1))}
 /* setup */
-function renderNames(){const box=$('names');box.innerHTML='';for(let i=0;i<S.n;i++){const inp=document.createElement('input');inp.placeholder='玩家 '+(i+1);inp.value=S.names[i]||'';inp.oninput=()=>{S.names[i]=inp.value;save()};box.appendChild(inp)}$('n').textContent=S.n}
+function renderNames(){const box=$('names');box.innerHTML='';for(let i=0;i<S.n;i++){const inp=document.createElement('input');inp.placeholder='朋友 '+(i+1);inp.value=S.names[i]||'';inp.oninput=()=>{S.names[i]=inp.value;save()};box.appendChild(inp)}$('n').textContent=S.n}
 function renderDecks(){const box=$('decks');box.innerHTML='';[...DECKS.map(d=>{const m=d.name.match(/^(.*?)（(.*)）$/)||[0,d.name,''];return{id:d.id,html:'<b>'+d.emoji+'</b>'+m[1]+'<small>'+m[2]+'</small>'}}),{id:'custom',html:'<b>✏️</b>自訂主題<small>貼上自己的題目</small>'}].forEach(d=>{const el=document.createElement('div');el.className='deck'+(S.deck===d.id?' on':'');el.innerHTML=d.html;el.onclick=()=>{S.deck=d.id;save();renderDecks()};box.appendChild(el)});$('customBox').classList.toggle('hidden',S.deck!=='custom')}
 $('minus').onclick=()=>{if(S.n>2){S.n--;save();renderNames()}};
 $('plus').onclick=()=>{if(S.n<12){S.n++;save();renderNames()}};
@@ -165,10 +170,12 @@ const end=e=>{if(!dragging)return;dragging=false;
 if(!moved){pick();return}settle()};
 st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end)})();
 let cur=null;
-function pick(){if(!remaining())return;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
+let busy=false;function pick(){if(!remaining()||busy)return;busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
+function reveal(){busy=false;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
 const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div><div style="font-size:22px;font-weight:800;margin-top:10px">話題卡</div>`;
 $('qtag').textContent=i.emoji+' '+i.short;$('qtext').textContent=q;$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
-$('qcard').classList.remove('flip');$('ov').classList.remove('hidden');setTimeout(()=>{$('qcard').classList.add('flip');setTimeout(confetti,350)},250);if(navigator.vibrate)navigator.vibrate(20)}
+$('qcard').classList.remove('flip');$('tap').classList.remove('hidden');$('qbtns').classList.add('hidden');const w=document.querySelector('.qwrap');w.classList.remove('rise');void w.offsetWidth;w.classList.add('rise');$('ov').classList.remove('hidden');if(navigator.vibrate)navigator.vibrate(20)}
+$('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard').classList.add('flip');$('tap').classList.add('hidden');if(navigator.vibrate)navigator.vibrate(15);setTimeout(()=>{confetti();$('qbtns').classList.remove('hidden')},1300)};
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
 $('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
 $('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
