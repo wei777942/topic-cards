@@ -114,6 +114,13 @@ input::placeholder,textarea::placeholder{color:#0006}
 .it .m{background:#fff!important;border:2px solid var(--ink)}
 .dim{background:#0006}
 .sub[style*="--g"]{color:var(--ink)!important;opacity:.8!important}
+.qfront small{font-size:12px!important;letter-spacing:4px!important;font-weight:900;top:22px!important}
+.cn{position:absolute;font-size:22px;font-weight:900;font-family:"Avenir Next",-apple-system,sans-serif;letter-spacing:1px;line-height:1}
+.cn.tl{top:20px;left:22px}.cn.br{bottom:20px;right:22px}.cn.br::after{display:none}.cn.br::before{content:"✦";display:block;font-size:12px;margin-bottom:4px;text-align:center}
+.cn::after{content:"✦";display:block;font-size:12px;margin-top:4px;text-align:center}
+.qfront .no{bottom:24px!important;color:#0008!important}
+.btn{white-space:nowrap}.ov .btn::before,.ov .btn::after{content:none}
+.ov{background:radial-gradient(circle at 50% 45%,#fff8e6,#f6f1e7 70%)!important}
 </style></head><body>
 
 <div id="setup" class="scr">
@@ -144,7 +151,7 @@ input::placeholder,textarea::placeholder{color:#0006}
 </div>
 
 <div id="ov" class="ov hidden">
-<div class="qwrap"><div class="qcard" id="qcard"><div class="qf qback" id="qback"></div><div class="qf qfront"><small id="qtag"></small><div id="qtext"></div><div class="no" id="qno"></div></div></div></div>
+<div class="qwrap"><div class="qcard" id="qcard"><div class="qf qback" id="qback"></div><div class="qf qfront"><small id="qtag"></small><b class="cn tl" id="cn1"></b><b class="cn br" id="cn2"></b><div id="qtext"></div><div class="no" id="qno"></div></div></div></div>
 <div class="tap" id="tap">👆 點一下翻開</div><div class="row hidden" id="qbtns"><button class="btn sec" id="skip">跳過</button><button class="btn" id="keep" style="flex:2">已回答 👉</button></div>
 </div>
 <div id="pocket" class="hidden"><div class="dim" id="pdim"></div><div class="sheet" id="psheet"></div></div>
@@ -212,7 +219,7 @@ let cur=null;
 let busy=false;function pick(){if(!remaining()||busy)return;busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
 function reveal(){busy=false;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
 const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div><div style="font-size:22px;font-weight:800;margin-top:10px">話題卡</div>`;
-$('qtag').textContent=i.emoji+' '+i.short;$('qtext').textContent=q;$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
+$('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
 $('qcard').classList.remove('flip');$('tap').classList.remove('hidden');$('qbtns').classList.add('hidden');const w=document.querySelector('.qwrap');w.classList.remove('rise');void w.offsetWidth;w.classList.add('rise');$('ov').classList.remove('hidden');if(navigator.vibrate)navigator.vibrate(20)}
 $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard').classList.add('flip');$('tap').classList.add('hidden');if(navigator.vibrate)navigator.vibrate(15);setTimeout(()=>{confetti();$('qbtns').classList.remove('hidden')},1300)};
 $('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
