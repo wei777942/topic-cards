@@ -121,6 +121,7 @@ input::placeholder,textarea::placeholder{color:#0006}
 .qfront .no{bottom:24px!important;color:#0008!important}
 .btn{white-space:nowrap}.ov .btn::before,.ov .btn::after{content:none}
 .ov{background:radial-gradient(circle at 50% 45%,#fff8e6,#f6f1e7 70%)!important}
+.olin{width:100%;font-size:20px;padding:14px;border:3px solid #111;border-radius:14px;margin:6px 0;box-sizing:border-box;background:#fff;color:#111;font-family:inherit}
 .ic{width:1em;height:1em;vertical-align:-.15em;display:inline-block}
 .deck b .ic{width:36px;height:36px}.c .e .ic{width:74px;height:74px}.hub .ic{width:30px;height:30px}
 .chip i .ic{width:15px;height:15px;margin-right:3px}.deck.on b{color:#ffd76b}
@@ -145,6 +146,24 @@ input::placeholder,textarea::placeholder{color:#0006}
 <div class="panel" style="margin-top:14px"><div class="decks" id="decks"></div></div>
 <div id="customBox" class="hidden"><h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> 自訂題目（一行一題）</h2><textarea id="custom" rows="7" placeholder="貼上你的題目，一行一題"></textarea></div>
 <button class="btn" id="start" style="margin-top:22px">START</button>
+<button class="btn sec" id="goOnline" style="margin-top:10px">多人連線・每人一支手機</button>
+</div>
+
+<div id="online" class="scr hidden">
+<h1 style="margin-top:20px">多人連線</h1><p class="sub">每個人用自己的手機翻牌</p>
+<div id="olJoin" class="panel">
+<input id="olName" class="olin" placeholder="你的名字" maxlength="10">
+<button class="btn" id="olCreate" style="margin-top:6px">開新房間</button>
+<p class="sub" style="margin:16px 0 4px">或輸入朋友的房號</p>
+<div class="row"><input id="olCode" class="olin" inputmode="numeric" maxlength="4" placeholder="4 位數房號" style="flex:2"><button class="btn sec" id="olJoinBtn">加入</button></div>
+</div>
+<div id="olRoom" class="panel hidden">
+<p class="sub" style="margin:0">房號</p><div id="olShow" style="font-size:60px;font-weight:900;letter-spacing:10px;text-align:center"></div>
+<button class="btn sec" id="olShare">分享邀請連結</button>
+<div id="olList" style="margin:12px 0;font-size:19px;line-height:1.8;text-align:center"></div>
+<button class="btn" id="olStart">START</button><div id="olWait" class="sub" style="text-align:center"></div>
+</div>
+<button class="btn sec" id="olBack" style="margin-top:14px">返回</button>
 </div>
 
 <div id="spin" class="scr hidden">
@@ -180,21 +199,22 @@ const WC=['#f97316','#0ea5e9','#10b981','#e11d48','#8b5cf6','#eab308','#14b8a6',
 const KEY='topicCards.v3';
 let S=Object.assign({n:4,names:[],deck:'icebreak',custom:''},JSON.parse(localStorage.getItem(KEY)||'{}'));
 if(S.deck!=='custom'&&!DECKS.some(d=>d.id===S.deck))S.deck='icebreak';
-let G=null; // {pile:[], total, player, pockets:[[{q,deck}]], drawn}
+let G=null,ONL=false,RM=null,ME=-1,REF=null; // {pile:[], total, player, pockets:[[{q,deck}]], drawn}
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
-function show(id){['setup','spin','game'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
-function deckInfo(){const d=DECKS.find(x=>x.id===S.deck);return d?{emoji:DI(d.id),name:d.name,short:d.name.replace(/（.*/,'')}:{emoji:DI('custom'),name:'自訂主題',short:'自訂'}}
-function col(){return THEME[S.deck]||THEME.custom}
+function show(id){['setup','spin','game','online'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
+function DK(){return ONL?RM.deck:S.deck}
+function deckInfo(){const d=DECKS.find(x=>x.id===DK());return d?{emoji:DI(d.id),name:d.name,short:d.name.replace(/（.*/,'')}:{emoji:DI('custom'),name:'自訂主題',short:'自訂'}}
+function col(){return THEME[DK()]||THEME.custom}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function name(i){return(S.names[i]||'').trim()||('朋友 '+(i+1))}
+function name(i){if(ONL)return(RM.names||[])[i]||'?';return(S.names[i]||'').trim()||('朋友 '+(i+1))}
 /* setup */
 function renderNames(){const box=$('names');box.innerHTML='';for(let i=0;i<S.n;i++){const inp=document.createElement('input');inp.placeholder='朋友 '+(i+1);inp.value=S.names[i]||'';inp.oninput=()=>{S.names[i]=inp.value;save()};box.appendChild(inp)}$('n').textContent=S.n}
 function renderDecks(){const box=$('decks');box.innerHTML='';[...DECKS.map(d=>{const m=d.name.match(/^(.*?)（(.*)）$/)||[0,d.name,''];return{id:d.id,html:'<b>'+DI(d.id)+'</b>'+m[1]+'<small>'+m[2]+'</small>'}}),{id:'custom',html:'<b>'+DI('custom')+'</b>自訂主題<small>貼上自己的題目</small>'}].forEach(d=>{const el=document.createElement('div');el.className='deck'+(S.deck===d.id?' on':'');el.innerHTML=d.html;el.onclick=()=>{S.deck=d.id;save();renderDecks()};box.appendChild(el)});$('customBox').classList.toggle('hidden',S.deck!=='custom')}
 $('minus').onclick=()=>{if(S.n>2){S.n--;save();renderNames()}};
 $('plus').onclick=()=>{if(S.n<12){S.n++;save();renderNames()}};
 $('custom').value=S.custom;$('custom').oninput=e=>{S.custom=e.target.value;save()};
-function cards(){if(S.deck==='custom')return[...new Set(S.custom.split('\n').map(s=>s.trim()).filter(Boolean))];return DECKS.find(d=>d.id===S.deck).cards}
+function cards(){if(ONL)return RM.cards||DECKS.find(d=>d.id===RM.deck).cards;if(S.deck==='custom')return[...new Set(S.custom.split('\n').map(s=>s.trim()).filter(Boolean))];return DECKS.find(d=>d.id===S.deck).cards}
 function shuffled(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 $('start').onclick=()=>{if(!cards().length){alert('自訂主題還沒有題目喔');return}const c=cards();G={pile:shuffled(c),total:c.length,drawn:0,player:0,pockets:Array.from({length:S.n},()=>[])};pos=0;buildWheel();show('spin')};
 /* wheel */
@@ -233,19 +253,59 @@ const end=e=>{if(!dragging)return;dragging=false;
 if(!moved){pick();return}settle()};
 st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end)})();
 let cur=null;
-let busy=false;function pick(){if(!remaining()||busy)return;busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
-function reveal(){busy=false;const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};
+let busy=false;function pick(){if(!remaining()||busy)return;if(ONL&&RM.turn!==ME){olToast();return}busy=true;$('stage').querySelectorAll('.c').forEach(e=>{if(e.classList.contains('mid')){e.style.transform='translateY(-10px) scale(1.15)'}else{const m=(e.style.transform.match(/translateX\((-?[\d.]+)px/)||[0,0])[1];e.style.transform='translateX('+(m*2.2)+'px) scale(.6)';e.style.opacity=0}});setTimeout(reveal,380)}
+function reveal(){busy=false;if(ONL){olDraw();return}const n=remaining();const idx=((Math.round(pos)%n)+n)%n;const q=G.pile.splice(idx,1)[0];G.drawn++;cur={q,deck:S.deck,no:G.drawn};showCard(q)}
+function showCard(q){
 const [a,b]=col(),i=deckInfo();$('qback').style.background=`linear-gradient(150deg,${a},${b})`;$('qback').innerHTML=`<div style="font-size:70px">${i.emoji}</div>`;
-$('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;{const D=DECKS.find(x=>x.id===S.deck),j=D?D.cards.indexOf(q):-1;$('qen').textContent=(D&&D.en&&j>=0)?D.en[j]:''}$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
+$('qtag').textContent='很高興認識你';{const k=cards().indexOf(q)+1,t=String(k).padStart(2,'0');$('cn1').textContent=$('cn2').textContent=t}$('qtext').textContent=q;{const D=DECKS.find(x=>x.id===DK()),j=D?D.cards.indexOf(q):-1;$('qen').textContent=(D&&D.en&&j>=0)?D.en[j]:''}$('qno').textContent=esc(name(G.player))+' 抽到的第 '+(G.pockets[G.player].length+1)+' 張';
 $('qcard').classList.remove('flip');$('tap').classList.remove('hidden');$('qbtns').classList.add('hidden');const w=document.querySelector('.qwrap');w.classList.remove('rise');void w.offsetWidth;w.classList.add('rise');$('ov').classList.remove('hidden');if(navigator.vibrate)navigator.vibrate(20)}
 $('qcard').onclick=()=>{if($('qcard').classList.contains('flip'))return;$('qcard').classList.add('flip');$('tap').classList.add('hidden');if(navigator.vibrate)navigator.vibrate(15);setTimeout(()=>{confetti();$('qbtns').classList.remove('hidden')},1300)};
-$('keep').onclick=()=>{G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
-$('skip').onclick=()=>{if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
-$('shuf').onclick=()=>{G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
-$('back').onclick=()=>{if(!confirm('確定要重新開始嗎？這一局和大家的口袋會清空。'))return;show('setup')};
+$('keep').onclick=()=>{if(ONL){olDone(true);return}G.pockets[G.player].push(cur);cur=null;$('ov').classList.add('hidden');G.player=(G.player+1)%S.n;renderGame()};
+$('skip').onclick=()=>{if(ONL){olDone(false);return}if(cur){G.pile.splice(Math.floor(Math.random()*(G.pile.length+1)),0,cur.q);G.drawn--}cur=null;$('ov').classList.add('hidden');renderGame()};
+$('shuf').onclick=()=>{if(ONL){REF.transaction(r=>{if(!r)return r;r.pile=shuffled(r.pile||[]);return r});vel=.8;settle();return}G.pile=shuffled(G.pile);vel=(Math.random()>.5?1:-1)*(.6+Math.random()*.4);settle()};
+$('back').onclick=()=>{if(ONL){if(!confirm('要離開這個房間嗎？'))return;olLeave();return}if(!confirm('確定要重新開始嗎？這一局和大家的口袋會清空。'))return;show('setup')};
 function openPocket(k){const p=G.pockets[k];const items=p.map(x=>{const d=DECKS.find(y=>y.id===x.deck);const c=THEME[x.deck]||THEME.custom;return`<div class=it><div class=m style="background:linear-gradient(150deg,${c[0]},${c[1]})">${DI(x.deck)}</div><div>${esc(x.q)}</div></div>`}).join('')||'<p>還沒有收任何卡，輪到他就去抽一張吧！</p>';
 $('psheet').innerHTML=`<h3>${IC.bag} ${esc(name(k))}的口袋</h3><p>收了 ${p.length} 張卡</p>${items}<button class="btn sec" id="pclose">關閉</button>`;$('pocket').classList.remove('hidden');$('pclose').onclick=closePocket}
 function closePocket(){$('pocket').classList.add('hidden')}$('pdim').onclick=closePocket;
 function confetti(){const e=['✦','✧','★','✦','●'];for(let i=0;i<16;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%5];s.style.setProperty('--x',(Math.random()*320-160)+'px');s.style.setProperty('--y',(Math.random()*-320-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1100)}}
-renderNames();renderDecks();
+/* online */
+const FBV='https://www.gstatic.com/firebasejs/10.12.2/';
+const FBC={apiKey:"AIzaSyAb9Gs0a-AwdbHGvxFsGzuvffUR_VhtXyE",authDomain:"topic-cards.firebaseapp.com",databaseURL:"https://topic-cards-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"topic-cards",storageBucket:"topic-cards.firebasestorage.app",messagingSenderId:"292844842049",appId:"1:292844842049:web:0be222971f1d6c3782eac0"};
+let fbP=null;function fb(){return fbP||(fbP=new Promise((ok,no)=>{const ld=(f,cb)=>{const e=document.createElement('script');e.src=FBV+f;e.onload=cb;e.onerror=()=>{fbP=null;no()};document.head.appendChild(e)};ld('firebase-app-compat.js',()=>ld('firebase-database-compat.js',()=>{firebase.initializeApp(FBC);ok(firebase.database())}))}))}
+const OK='topicCards.room';
+$('olName').value=localStorage.getItem('topicCards.me')||'';
+$('goOnline').onclick=()=>{show('online');olUI()};
+$('olBack').onclick=()=>{if(ME>=0&&!confirm('要離開這個房間嗎？'))return;olLeave()};
+function olUI(){const inR=ME>=0;$('olJoin').classList.toggle('hidden',inR);$('olRoom').classList.toggle('hidden',!inR)}
+function olNm(){const n=$('olName').value.trim();if(!n){alert('先輸入你的名字喔');$('olName').focus();return''}localStorage.setItem('topicCards.me',n);return n}
+function olErr(){alert('連不上網路，多人連線需要網路喔')}
+$('olCreate').onclick=async()=>{const nm=olNm();if(!nm)return;if(!cards().length){alert('自訂主題還沒有題目喔');return}let db;try{db=await fb()}catch(e){olErr();return}
+for(let t=0;t<20;t++){const code=String(1000+Math.floor(Math.random()*9000));const ref=db.ref('rooms/'+code);
+const r=await ref.transaction(v=>{if(v&&v.at>Date.now()-864e5)return;return{at:Date.now(),deck:S.deck,cards:S.deck==='custom'?cards():null,names:[nm],turn:0,started:false,drawn:0}});
+if(r.committed){olEnter(code,0);return}}alert('房間開不出來，再試一次')};
+$('olJoinBtn').onclick=()=>olJoin($('olCode').value.trim());
+async function olJoin(code){const nm=olNm();if(!nm)return;if(!/^\d{4}$/.test(code)){alert('房號是 4 位數字');return}let db;try{db=await fb()}catch(e){olErr();return}
+let me=-1;const r=await db.ref('rooms/'+code).transaction(v=>{if(!v)return v;const n=v.names||[];let k=n.indexOf(nm);if(k<0){if(n.length>=12)return;n.push(nm);k=n.length-1}me=k;v.names=n;return v});
+if(!r.committed||!r.snapshot.val()){alert(me<0&&r.snapshot.val()?'房間滿了（最多 12 人）':'找不到這個房間');return}olEnter(code,r.snapshot.val().names.indexOf(nm))}
+function olEnter(code,me){ME=me;localStorage.setItem(OK,JSON.stringify({code,me,t:Date.now()}));fb().then(db=>{if(REF)REF.off();REF=db.ref('rooms/'+code);$('olShow').textContent=code;REF.on('value',s=>olSync(s.val()))});show('online');olUI()}
+function olLeave(){if(REF)REF.off();REF=null;ONL=false;RM=null;ME=-1;localStorage.removeItem(OK);$('ov').classList.add('hidden');show('setup')}
+$('olShare').onclick=()=>{const u=location.origin+location.pathname+'?room='+$('olShow').textContent;if(navigator.share)navigator.share({title:'很高興認識你',text:'來玩話題卡，房號 '+$('olShow').textContent,url:u}).catch(()=>{});else{navigator.clipboard&&navigator.clipboard.writeText(u);alert('連結已複製：'+u)}};
+$('olStart').onclick=()=>{REF.transaction(r=>{if(!r)return r;const n=cards().length;r.pile=shuffled([...Array(n).keys()]);r.total=n;r.turn=Math.floor(Math.random()*(r.names||[]).length);r.drawn=0;r.pk=null;r.hold=null;r.started=true;return r})};
+function olSync(r){if(!r){if(ME>=0){alert('房間已經關閉了');olLeave()}return}RM=r;const n=r.names||[];
+if(!r.started){ONL=false;$('olList').innerHTML=n.map((x,i)=>esc(x)+(i===0?'（房主）':'')+(i===ME?' ← 你':'')).join('<br>');const host=ME===0;$('olStart').classList.toggle('hidden',!host);$('olWait').textContent=host?(n.length<2?'等朋友輸入房號加入…':'人到齊就按 START'):'等房主按開始…';if(!$('online').classList.contains('hidden'))return;show('online');olUI();return}
+const C=cards();const pk=r.pk||{};const was=ONL;ONL=true;
+G={pile:(r.pile||[]).map(i=>C[i]),total:r.total,drawn:r.drawn||0,player:r.turn,pockets:n.map((_,k)=>(pk[k]||[]).map(i=>({q:C[i],deck:r.deck})))};
+if(!was){pos=0;show('game')}if(!dragging)renderGame();
+$('who').innerHTML=r.turn===ME?'輪到 <b>你</b> 了！':'輪到 <b>'+esc(name(r.turn))+'</b>，等他翻牌';
+if(r.turn===ME&&r.hold!=null&&r.hold!==undefined&&$('ov').classList.contains('hidden')&&!busy){cur={q:C[r.hold],i:r.hold,deck:r.deck};showCard(cur.q)}}
+function olToast(){alert('還沒輪到你，等 '+name(RM.turn)+' 翻完牌')}
+async function olDraw(){const n=remaining();const k=((Math.round(pos)%n)+n)%n;busy=true;
+const r=await REF.transaction(v=>{if(!v)return v;const p=v.pile||[];if(v.turn!==ME||v.hold!=null||!p.length)return;const kk=Math.min(k,p.length-1);v.hold=p.splice(kk,1)[0];v.pile=p;return v});busy=false;
+const v=r.snapshot.val();if(!r.committed||!v||v.hold==null){renderGame();return}cur={q:cards()[v.hold],i:v.hold,deck:v.deck};showCard(cur.q)}
+function olDone(keep){const i=cur&&cur.i;cur=null;$('ov').classList.add('hidden');if(i==null)return;
+REF.transaction(v=>{if(!v)return v;if(v.hold!==i)return;v.hold=null;if(keep){v.pk=v.pk||{};v.pk[ME]=(v.pk[ME]||[]).concat(i);v.drawn=(v.drawn||0)+1;v.turn=(v.turn+1)%(v.names||[1]).length}else{const p=v.pile||[];p.splice(Math.floor(Math.random()*(p.length+1)),0,i);v.pile=p}return v})}
+function olAuto(){const q=new URLSearchParams(location.search).get('room');if(q){$('olCode').value=q;history.replaceState(null,'',location.pathname);show('online');olUI();return}
+try{const o=JSON.parse(localStorage.getItem(OK)||'null');if(o&&Date.now()-o.t<864e5)olEnter(o.code,o.me)}catch(e){}}
+
+renderNames();renderDecks();olAuto();
 </script></body></html>
